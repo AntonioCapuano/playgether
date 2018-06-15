@@ -12,3 +12,8 @@ Thanks to this project I had to deal with languages and web technologies for bui
   - (micro)Framework Flask.
   
 I used Visual Studio Code to programm.
+
+Once downloaded, from the terminal:
+export FLASK_APP = playgether.py
+export FLASK_ENV = development
+flask run
