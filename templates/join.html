@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>
+      Playgether
+  </title>
+  <link rel="icon" href="../static/content/images/logo-orange.png">
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.1/dist/leaflet.css" integrity="sha512-Rksm5RenBEKSKFjgI3a41vrjkw4EVPlJ3+OiI65vTjIdo9brlAacEuKOiQ5OFh7cOI1bkDwLqdLw3Zg0cRJAAQ==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.3.1/dist/leaflet.js" integrity="sha512-/Nsx9X4HebavoBvEBuyp3I7od5tA0UzAxs+j83KgC8PU0kgB4XiK4Lfe4y4cgBtaRJQEIFCW+oC506aPT2L1zw==" crossorigin=""></script>
+  <script src='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v0.44.2/mapbox-gl.css' rel='stylesheet' />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}"/>
+
+  <style>
+     body{
+        background-image: url('../static/content/images/logo.png');
+        background-size: 300px, 300px;
+      }
+
+      
+  </style>
+  <script>
+  var today = new Date();
+  var giorno = today.getDate();
+  var mese = today.getMonth();
+  var anno = today.getFullYear();
+  var data_odierna = anno + '-' + mese + '-' + giorno;
+  </script>
+
+  
+
+</head>
+<body>
+   
+<div class="container">  
+</div>
+    
+<div class="container">
+    <div class="row">
+      <div class="col-md-2"></div>
+      <div class="col-md-8" style="background-color: rgba(0, 0, 0, 0.3); border-radius: 5px;">
+             
+            <form action="/conferma" method="post">
+                <div class="row">
+                    <div class="col-md-12">
+                            <label id="nome" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);">{{nome}}</label>
+                    </div>
+                        
+                    <div class="col-md-12">
+                        <label id="tipo" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);">{{tipo}} vs {{tipo}}</label>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label id="posti" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);"></label>
+                    </div>
+                        
+                    <div class="col-md-12">
+                        <label id="indirizzo" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);">{{indirizzo}}</label>
+                    </div>
+
+                    <div class="col-md-12">
+                            <label id="data" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);"></label>
+                        </div>
+
+                    <div class="col-md-12">
+                            <label class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);"><span id="countdown"></span></label>
+                        </div>
+                        
+                    <div class="col-md-12">
+                        <label id="creatore" class="login-label" style="color: white; background-color: rgba(0,0,0,0.70);">Creato da: {{creatore}}</label>
+                    </div>
+                    
+                        
+
+                </div>
+                {% if error is defined %}
+                <div class='row error_message'>
+                        <div class='col-md-12'>
+                        <p>{{error}}</p>
+                        </div>
+                    </div>
+                {% endif %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <a href="/join_in/{{nome}}" class='login-barra center' style="width: 50%; background-color: lightgreen;">JOIN</a>
+                    </div>
+    
+                    </div>
+                
+            </form>
+        </div>
+         
+    </div>
+</div>
+
+<script>
+        /*Funzione in Javascript spudoratamente copiata da w3school per il countdown*/
+        var countDownDate = new Date('{{data}}').getTime();
+        
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+        
+            // Get todays date and time
+            var now = new Date().getTime();
+            
+            // Find the distance between now an the count down date
+            var distance = countDownDate - now;
+            
+            // Time calculations for days, hours, minutes and seconds
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            
+            // Output the result in an element with id="demo"
+            document.getElementById("countdown").innerHTML = days + "d " + hours + "h "
+            + minutes + "m " + seconds + "s " + "left !";
+            
+            // If the count down is over, write some text 
+            if (distance < 0) {
+                clearInterval(x);
+                document.getElementById("countdown").innerHTML = "Iscrizioni chiuse!";
+            }
+        }, 1000);
+        </script>
+
+<script>
+    var getTravelDateFormatted = function() {
+        return function(str) {
+            var daysNames = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'],
+              monthNames = ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+              d = new Date(str),
+              day = d.getDate(),
+              month = monthNames[d.getMonth()],
+              year = d.getFullYear().toString().substr(2, 2),
+              hours = d.getHours(),
+              minutes = d.getMinutes(),
+              dayName = daysNames[d.getDay()];
+    
+            //return day + '-' + month + '-' + year + ' (' + dayName + ')';
+            return hours > 12 ? (dayName + ' ' + day + ' ' + month + ' ' + (hours - 12) + ":" + minutes + " pm"):
+              (dayName + ' ' + day + ' ' + month + ' ' + hours + ":" + minutes + " am");
+              };
+            }();
+    
+      
+    var formatedDate = getTravelDateFormatted('{{data}}');
+    document.getElementById('data').innerHTML = formatedDate;
+
+</script>
+
+<script>
+    var x = {{tipo}};
+    var posti = parseInt(x)*2;
+    
+    var y = {{liberi}};
+    var z = posti - parseInt(y);
+    var posti_disponibili = z + ' / ' + posti;
+    document.getElementById('posti').innerHTML = posti_disponibili;
+
+</script>
+
+</body>
+</html>
